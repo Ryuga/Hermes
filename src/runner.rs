@@ -3,8 +3,7 @@ use std::process::{Command};
 use crate::lang_config::LangConfig;
 
 pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32), String> {
-    let mut cmd = Command::new("sudo");
-    cmd.arg("nsjail");
+    let mut cmd = Command::new("nsjail");
     cmd.args([
         "--disable_clone_newns",
         "--time_limit", "2",
