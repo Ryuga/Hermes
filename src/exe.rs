@@ -10,6 +10,9 @@ pub async fn execute_code(req: Req) -> Result<String, String>{
 
     let file = work_dir.path().join(lang_config.source);
     fs::write(&file, req.code).map_err(|e| e.to_string())?;
+    println!("DIR = {:?}", work_dir.path());
+    println!("FILE = {:?}", file);
+    println!("EXISTS = {}", file.exists());
     let (stdout, stderr, code) = safe_execute(work_dir.path(), lang_config)?;
 
     Ok(format!(
