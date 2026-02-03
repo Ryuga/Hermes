@@ -32,6 +32,5 @@ async fn handler() -> &'static str {
 }
 
 async fn execution_handler(Json(req): Json<Req>) -> String {
-    println!("received");
     execute_code(req).await.unwrap_or_else(|e| e)
 }
