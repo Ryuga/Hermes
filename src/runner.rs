@@ -16,8 +16,8 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
         "--bindmount_ro", "/lib64",
         "--bindmount_ro", "/bin",
         "--bindmount",
-        &format!("{}:/sandbox", work_dir.to_str().unwrap()),
-        "--chroot", "/sandbox",
+        "--bindmount", &format!("{}:/", work_dir.to_str().unwrap()),
+        "--chroot", "/",
         "--",
     ]);
 
