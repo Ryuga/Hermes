@@ -8,3 +8,4 @@ axum = "0.8.8"
 serde = { version = "1.0.228", features = ["derive"]}
 tokio = { version = "1.49.0", features = ["full"] }
 tempfile = "3.23.0"
+dotenvy = "0.15.7"
