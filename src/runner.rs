@@ -6,18 +6,12 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     let mut cmd = Command::new("sudo");
     cmd.arg("nsjail");
     cmd.args([
+        "--disable_clone_newns",
         "--time_limit", "2",
-        "--rlimit_as", "256",
         "--rlimit_cpu", "2",
+        "--rlimit_as", "256",
         "--disable_proc",
         "--iface_no_lo",
-        "--bindmount_ro", "/usr",
-        "--bindmount_ro", "/lib",
-        "--bindmount_ro", "/lib64",
-        "--bindmount_ro", "/bin",
-        "--bindmount",
-        "--bindmount", &format!("{}:/", work_dir.to_str().unwrap()),
-        "--chroot", "/",
         "--",
     ]);
 
