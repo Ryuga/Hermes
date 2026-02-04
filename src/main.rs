@@ -9,6 +9,8 @@ use models::Req;
 use crate::exe::execute_code;
 use dotenvy::dotenv;
 use std::env;
+use axum::http::StatusCode;
+use crate::models::Resp;
 
 #[tokio::main]
 async fn main() {
@@ -31,6 +33,9 @@ async fn handler() -> &'static str {
     "UP!"
 }
 
-async fn execution_handler(Json(req): Json<Req>) -> String {
-    execute_code(req).await.unwrap_or_else(|e| e)
+async fn execution_handler(Json(req): Json<Req>) -> Result<Json<Resp>, StatusCode> {
+    let result = execute_code(req).await
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+
+    Ok(Json(result))
 }

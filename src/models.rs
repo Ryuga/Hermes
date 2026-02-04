@@ -8,7 +8,7 @@ pub struct Req {
 
 #[derive(Serialize)]
 pub struct Resp {
-    pub code: i8,
+    pub code: i32,
     pub output: String,
     pub std_log: String
 }
