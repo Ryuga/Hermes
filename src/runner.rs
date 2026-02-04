@@ -21,6 +21,7 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
         "--user", "99999",
         "--group", "99999",
         "--cwd", "/sandbox",
+        "--really_quiet",
     ]);
 
     cmd.arg("--bindmount");
