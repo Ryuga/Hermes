@@ -28,7 +28,7 @@ async fn main() {
 }
 
 async fn handler() -> &'static str {
-    "Hello world!"
+    "UP!"
 }
 
 async fn execution_handler(Json(req): Json<Req>) -> String {

@@ -1,7 +1,8 @@
 use std::fs;
+use axum::Json;
 use tempfile::tempdir;
 use crate::lang_config::get_lang_config;
-use crate::models::Req;
+use crate::models::{Req, Resp};
 use crate::runner::safe_execute;
 
 pub async fn execute_code(req: Req) -> Result<String, String>{
@@ -10,12 +11,7 @@ pub async fn execute_code(req: Req) -> Result<String, String>{
 
     let file = work_dir.path().join(lang_config.source);
     fs::write(&file, req.code).map_err(|e| e.to_string())?;
-    println!("DIR = {:?}", work_dir.path());
-    println!("FILE = {:?}", file);
-    println!("EXISTS = {}", file.exists());
-    let (stdout, stderr, code) = safe_execute(work_dir.path(), lang_config)?;
+    let (output, std_log, code) = safe_execute(work_dir.path(), lang_config)?;
 
-    Ok(format!(
-        "exit={}\nstdout:\n{}\nstderr:\n{}", code, stdout, stderr
-    ))
+    Ok(Json(Resp {code, output, std_log}))
 }
