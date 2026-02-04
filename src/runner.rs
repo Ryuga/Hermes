@@ -1,14 +1,15 @@
 use std::path::Path;
 use std::process::Command;
-use crate::lang_config::LangConfig;
+use crate::models::LangConfig;
 
 pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32), String> {
     let mut cmd = Command::new("sudo");
+    let time_limit = config.max_time_limit.to_string();
 
     cmd.arg("nsjail");
     cmd.args([
         "--mode", "o",
-        "--time_limit", "2",
+        "--time_limit", &time_limit,
         "--max_cpus", "1",
         "--rlimit_as", "256",
         "--rlimit_cpu", "2",

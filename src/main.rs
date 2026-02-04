@@ -1,4 +1,4 @@
-mod lang_config;
+mod loader;
 mod exe;
 mod models;
 mod runner;

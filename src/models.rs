@@ -1,5 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+#[derive(Deserialize, Clone)]
+pub struct LangConfig {
+    pub source: String,
+    pub run: Vec<String>,
+    pub max_time_limit: u64,
+}
+
 #[derive(Deserialize)]
 pub struct Req {
     pub language: String,

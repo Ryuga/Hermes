@@ -1,0 +1,7 @@
+{
+  "python": {
+    "source": "main.py",
+    "run": ["/usr/bin/python3", "main.py"],
+    "max_time_limit": 2
+  }
+}
