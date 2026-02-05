@@ -37,9 +37,12 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     cmd.arg("--rlimit_stack").arg(config.max_stack_mb.to_string());
     cmd.arg("--rlimit_fsize").arg(fsize_mb.to_string());
 
+    cmd.arg("--bindmount_ro").arg("/dev/null:/dev/null");
+
     // Read only input and copy to temp mount as last step for exec
     cmd.arg("--bindmount_ro")
         .arg(format!("{}:/input", work_dir.display()));
+
 
     // TODO: New API was getting rejected on Oracle VM. Need to check on local
     // Use old binding API
