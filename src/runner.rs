@@ -9,9 +9,11 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     let fsize_mb = ((config.max_output_kb + 1023) / 1024).max(1);
 
     let mut cmd = Command::new("nsjail");
+    let tmpfs_bytes = 16 * 1024 * 1024;
 
     cmd.args([
         "--mode", "o",
+        "--experimental_mnt", "old", // since new api is getting rejected.
         "--cwd", "/sandbox",
         "--max_cpus", "1",
     ]);
@@ -22,6 +24,7 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     cmd.arg("--uid_mapping").arg(format!("0:{}:1", nix::unistd::getuid()));
     cmd.arg("--gid_mapping").arg(format!("0:{}:1", nix::unistd::getgid()));
 
+    // Limit enforcement per language
     cmd.arg("--time_limit").arg(config.max_time_limit.to_string());
     cmd.arg("--rlimit_as").arg(config.max_memory_mb.to_string());
     cmd.arg("--rlimit_cpu").arg(config.max_cpu_time_sec.to_string());
@@ -30,24 +33,45 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     cmd.arg("--rlimit_stack").arg(config.max_stack_mb.to_string());
     cmd.arg("--rlimit_fsize").arg(fsize_mb.to_string());
 
-    cmd.arg("--bindmount").arg(format!("{}:/sandbox", work_dir.display()));
+    // Read only input and copy to temp mount as last step for exec
+    cmd.arg("--bindmount_ro")
+        .arg(format!("{}:/input", work_dir.display()));
+
+    // TODO: New API was getting rejected on Oracle VM. Need to check on local
+    // Use old binding API
+    // cmd.arg("--tmpfsmount")
+    //     .arg("/sandbox:size=16m");
+
+    cmd.arg("--mount")
+        .arg(format!("none:/sandbox:tmpfs:size={}", tmpfs_bytes));
 
 
 
+    // Mount system libs
     cmd.args([
         "--bindmount_ro", "/usr",
         "--bindmount_ro", "/lib",
         "--bindmount_ro", "/lib64",
         "--bindmount_ro", "/bin",
+    ]);
+
+    // Interface Isolation
+    cmd.args([
         "--disable_proc",
         "--iface_no_lo",
         "--env", "PATH=/usr/bin:/bin",
-        "--",
     ]);
 
+    // Copy input files to tmpfs before execution
+    let run_cmd = config.run.join(" ");
+    let wrapped = format!("cp -r /input/* /sandbox/ 2>/dev/null; {}", run_cmd);
 
-
-    cmd.args(&config.run);
+    cmd.args([
+        "--",
+        "/bin/sh",
+        "-c",
+        &wrapped,
+    ]);
 
     cmd.stdin(std::process::Stdio::piped());
     cmd.stdout(std::process::Stdio::piped());
