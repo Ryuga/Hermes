@@ -2,11 +2,24 @@
   "python": {
     "source": "main.py",
     "run": ["/usr/bin/python3", "main.py"],
-    "max_time_limit": 2
+    "max_time_limit": 2,
+    "max_cpu_time_sec": 2,
+    "max_memory_mb": 256,
+    "max_stack_mb": 16,
+    "max_processes": 8,
+    "max_open_files": 64,
+    "max_output_kb": 1024
   },
+
   "javascript": {
     "source": "main.js",
-    "run": ["/usr/bin/node", "main.js"],
-    "max_time_limit": 2
+    "run": ["/usr/bin/node", "--max-old-space-size=256", "main.js"],
+    "max_time_limit": 2,
+    "max_cpu_time_sec": 2,
+    "max_memory_mb": 768,
+    "max_stack_mb": 32,
+    "max_processes": 16,
+    "max_open_files": 128,
+    "max_output_kb": 1024
   }
 }

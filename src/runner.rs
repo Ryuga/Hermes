@@ -25,6 +25,8 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
     if  !debug {
         cmd.arg("--really_quiet");
     }
+
+    // TODO: rootless running not possible currently since mount not supported.
     // cmd.arg("--uid_mapping").arg(format!("0:{}:1", nix::unistd::getuid()));
     // cmd.arg("--gid_mapping").arg(format!("0:{}:1", nix::unistd::getgid()));
 
