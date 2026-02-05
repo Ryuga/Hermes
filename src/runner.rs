@@ -7,22 +7,26 @@ use crate::models::LangConfig;
 pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32), String> {
     let debug = env::var("DEBUG").unwrap_or_else(|_|"false".to_string()) == "true";
     let fsize_mb = ((config.max_output_kb + 1023) / 1024).max(1);
-
-    let mut cmd = Command::new("nsjail");
     let tmpfs_bytes = 16 * 1024 * 1024;
+
+    let mut cmd = Command::new("sudo");
+
+    cmd.arg("nsjail");
 
     cmd.args([
         "--mode", "o",
         "--experimental_mnt", "old", // since new api is getting rejected.
         "--cwd", "/sandbox",
         "--max_cpus", "1",
+        "--user", "99999",
+        "--group", "99999",
     ]);
 
     if  !debug {
         cmd.arg("--really_quiet");
     }
-    cmd.arg("--uid_mapping").arg(format!("0:{}:1", nix::unistd::getuid()));
-    cmd.arg("--gid_mapping").arg(format!("0:{}:1", nix::unistd::getgid()));
+    // cmd.arg("--uid_mapping").arg(format!("0:{}:1", nix::unistd::getuid()));
+    // cmd.arg("--gid_mapping").arg(format!("0:{}:1", nix::unistd::getgid()));
 
     // Limit enforcement per language
     cmd.arg("--time_limit").arg(config.max_time_limit.to_string());
