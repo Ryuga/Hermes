@@ -11,16 +11,30 @@ use axum::{Router, routing::{get, post}, Json};
 
 use crate::models::{Resp, Req};
 use crate::exe::execute_code;
+use tower_http::cors::{CorsLayer};
+use http::{Method, header::CONTENT_TYPE, HeaderValue};
 
 #[tokio::main]
 async fn main() {
     dotenv().ok();
+
+
     let port = env::var("PORT").unwrap_or("8000".into());
     let host = env::var("HOST").unwrap_or("127.0.0.1".into());
+    let allowed_origin = env::var("ALLOWED_ORIGIN")
+        .unwrap_or_else(|_| "http://localhost:3000".to_string());
+    let origin: HeaderValue = allowed_origin
+        .parse().expect("Invalid ALLOWED_ORIGIN value");
+
+    let cors = CorsLayer::new()
+        .allow_origin(origin)
+        .allow_methods([Method::POST])
+        .allow_headers([CONTENT_TYPE]);
 
     let app = Router::new()
         .route("/", get(handler))
-        .route("/execute/", post(execution_handler));
+        .route("/execute/", post(execution_handler)
+            .layer(cors));
 
     let addr = format!("{}:{}", host, port);
     let listener = TcpListener::bind(&addr).await.unwrap();
