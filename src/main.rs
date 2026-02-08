@@ -33,8 +33,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(handler))
-        .route("/execute/", post(execution_handler)
-            .layer(cors));
+        .route("/execute/", post(execution_handler)).layer(cors);
 
     let addr = format!("{}:{}", host, port);
     let listener = TcpListener::bind(&addr).await.unwrap();
