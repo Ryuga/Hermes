@@ -5,29 +5,61 @@ Hermes is a high-performance code execution engine written in Rust. It provides 
 The system is designed for judge platforms, coding sandboxes and auto-eval services. 
 It runs untrusted and potentially hostile code inside isolated environments with strict resource limits to ensure safety, predictability, and throughput.
 
-## Setup Instructions (Production)
+## Setup Instruction (Local)
 
+### Requirements
+* Rust toolchain installed
 
-## Requirements
+### Build application
+```bash
+git clone https://github.com/Ryuga/Hermes.git
+cd Hermes
+cargo build
+```
+### create `.env` file with following config
+```shell
+DEBUG=true  # turns on log output through std_log
+HOST=127.0.0.1
+PORT=8000
+ALLOWED_ORIGIN=https://your_frontend_domain_to_allow_cors.com
+```
+### Run the application
+```shell
+cargo run
+```
+Application will be live at `http://127.0.0.1:8000`
+
+Validate `curl http://127.0.0.1` should return `UP!`
+
+---
+## Production Deployment Instructions 
+
+### Requirements
 * Linux server
 * Rust toolchain installed
 * Nginx installed
 
-## Build Application
+### Build Application
 
 ```bash
 git clone https://github.com/Ryuga/Hermes.git
 cd Hermes
 cargo build --release
 ```
-
 Binary:
-
 ```
 target/release/Hermes
 ```
 
-## Configure Axum Bind Address
+### create `.env` file with following config
+```shell
+DEBUG=false  # turns off log output through std_log
+HOST=127.0.0.1
+PORT=8000
+ALLOWED_ORIGIN=https://your_frontend_domain_for_cors.com
+```
+
+### Configure Axum Bind Address
 
 Bind to localhost or all interfaces:
 
@@ -35,14 +67,14 @@ Bind to localhost or all interfaces:
 TcpListener::bind("127.0.0.1:8000")
 ```
 
-## Test App
+### Test App
 
 ```bash
 ./target/release/Hermes
 curl http://127.0.0.1:8000
 ```
 
-## Install Nginx
+### Install Nginx
 
 ```bash
 sudo apt update
@@ -51,7 +83,7 @@ sudo systemctl enable nginx
 sudo systemctl start nginx
 ```
 
-## Install Certificate on Server (Optional)
+### Install Certificate on Server (Optional)
 
 ```bash
 sudo mkdir -p /etc/nginx/certs
@@ -64,7 +96,7 @@ Paste contents and secure key:
 sudo chmod 600 /etc/nginx/certs/origin.key
 ```
 
-## Nginx HTTPS Reverse Proxy Config
+### Nginx HTTPS Reverse Proxy Config
 
 ```bash
 sudo nano /etc/nginx/sites-available/hermes
@@ -139,9 +171,77 @@ sudo systemctl enable hermes
 sudo systemctl start hermes
 ```
 
-## Logs
+### Logs
 
 ```
 journalctl -u hermes -f
 /var/log/nginx/error.log
 ```
+
+## Code Execution API
+
+Execute user code in a sandboxed environment. Currently supports:
+
+* Python
+* JavaScript
+
+---
+
+### Endpoint
+
+```
+POST /execute
+```
+
+---
+
+### Request
+
+**Headers**
+
+```
+Content-Type: application/json
+```
+
+**Body**
+
+```json
+{
+  "language": "python | javascript",
+  "code": "your source code"
+}
+```
+
+---
+
+### Response
+
+```json
+{
+  "code": 0,
+  "output": "stdout text",
+  "std_log": "stderr text/ std_log text"
+}
+```
+
+**Fields**
+
+* `code` → exit code (`0` = success, non-zero = runtime error)
+* `output` → program stdout
+* `std_log` → error output / logs if `DEBUG=true`
+
+---
+
+### Example
+
+```bash
+curl -X POST https://your-api/execute \
+  -H "Content-Type: application/json" \
+  -d '{"language":"python","code":"print(1+1)"}'
+```
+
+---
+
+### API Limits
+* Default Nginx rate limiting
+---
