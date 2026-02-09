@@ -1,4 +1,4 @@
-# HERMES
+# Hermes Code Execution Engine
 
 Hermes is a high-performance code execution engine written in Rust. It provides sandboxed, on-demand execution of arbitrary code through a simple REST API.
 
