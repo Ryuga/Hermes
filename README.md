@@ -245,3 +245,8 @@ curl -X POST https://your-api/execute \
 ### API Limits
 * Default Nginx rate limiting
 ---
+
+### Currently used by
+* Tortoise Community Online Code Execution Tool
+* Tortoise-BOT for discord code execution ulility.
+
