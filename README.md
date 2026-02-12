@@ -248,5 +248,5 @@ curl -X POST https://your-api/execute \
 
 ### Currently used by
 * Tortoise Community Online Code Execution Tool
-* Tortoise-BOT for discord code execution ulility.
+* Tortoise-BOT for discord code execution utility.
 
