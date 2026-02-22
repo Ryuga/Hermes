@@ -13,8 +13,12 @@ use crate::models::{Resp, Req};
 use crate::exe::execute_code;
 use tower_http::cors::{CorsLayer};
 use http::{Method, header::CONTENT_TYPE, HeaderValue};
+use once_cell::sync::Lazy;
+use tokio::sync::Semaphore;
 
-#[tokio::main]
+static EXEC_LIMIT: Lazy<Semaphore> = Lazy::new(|| Semaphore::new(4));
+
+#[tokio::main(flavor="multi_thread", worker_threads=2)]
 async fn main() {
     dotenv().ok();
 
@@ -50,8 +54,13 @@ async fn handler() -> &'static str {
 }
 
 async fn execution_handler(Json(req): Json<Req>) -> Result<Json<Resp>, StatusCode> {
-    let result = execute_code(req).await
-        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    let permit = EXEC_LIMIT.acquire().await.unwrap();
 
+    let result = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        execute_code(req)
+    }).await
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
+    .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
     Ok(Json(result))
 }
