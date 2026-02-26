@@ -1,10 +1,12 @@
 use std::env;
 use std::path::Path;
 use std::process::Command;
+use tokio::time::Instant;
 use crate::models::LangConfig;
 
 
-pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32), String> {
+pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32, u128), String> {
+    let start = Instant::now();
     let debug = env::var("DEBUG").unwrap_or_else(|_|"false".to_string()) == "true";
     let fsize_mb = ((config.max_output_kb + 1023) / 1024).max(1);
     let tmpfs_bytes = 16 * 1024 * 1024;
@@ -88,10 +90,12 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
 
     let child = cmd.spawn().map_err(|e| e.to_string())?;
     let out = child.wait_with_output().map_err(|e| e.to_string())?;
+    let time_ms = start.elapsed().as_millis();
 
     Ok((
         String::from_utf8_lossy(&out.stdout).to_string(),
         String::from_utf8_lossy(&out.stderr).to_string(),
         out.status.code().unwrap_or(-1),
+        time_ms,
     ))
 }

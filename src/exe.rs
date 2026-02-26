@@ -19,6 +19,6 @@ pub fn execute_code(req: Req) -> Result<Resp, String>{
     let mut exec_config = lang_config.clone();
     exec_config.run = program.run_cmd.clone();
 
-    let (output, std_log, code) = safe_execute(work_dir.path(), exec_config)?;
-    Ok(Resp{output, std_log, code})
+    let (output, std_log, code, time_ms) = safe_execute(work_dir.path(), exec_config)?;
+    Ok(Resp{output, std_log, code, time_ms})
 }
