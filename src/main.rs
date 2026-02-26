@@ -2,6 +2,7 @@ mod exe;
 mod runner;
 mod loader;
 mod models;
+mod languages;
 
 use std::env;
 use dotenvy::dotenv;

@@ -1,6 +1,7 @@
 {
   "python": {
     "source": "main.py",
+    "compile": false,
     "run": ["/usr/bin/python3", "main.py"],
     "max_time_limit": 2,
     "max_cpu_time_sec": 2,
@@ -13,6 +14,7 @@
 
   "javascript": {
     "source": "main.js",
+    "compile": false,
     "run": ["/usr/bin/node", "--max-old-space-size=256", "main.js"],
     "max_time_limit": 2,
     "max_cpu_time_sec": 2,

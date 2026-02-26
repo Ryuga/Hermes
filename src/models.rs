@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 
+fn default_compile() -> bool { false }
 fn default_time_limit() -> u64 { 2 }
 fn default_cpu_time_sec() -> u64 { 2 }
 fn default_memory_mb() -> u64 { 256 }
@@ -14,6 +15,9 @@ pub struct LangConfig {
     pub source: String,
 
     pub run: Vec<String>,
+
+    #[serde(default = "default_compile")]
+    pub compile: bool,
 
     #[serde(default = "default_time_limit")]
     pub max_time_limit: u64,
