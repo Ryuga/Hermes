@@ -12,14 +12,14 @@ pub struct PreparedProgram {
 }
 
 pub trait LanguageHandler {
-    fn prepare(&self, work_dir: &Path, code: &str, config: &LangConfig) -> Result<PreparedProgram, String>;
+    fn prepare(&self, work_dir: &Path, code: &str) -> Result<PreparedProgram, String>;
     fn compile(&self, prepared: &PreparedProgram) -> Result<(), String>;
 }
 
-pub fn get_handler(lang: &str) -> Box<dyn LanguageHandler> {
+pub fn get_handler(lang: &str, config: LangConfig) -> Box<dyn LanguageHandler> {
     match lang {
-        "python" => Box::new(PythonHandler),
-        "javascript" => Box::new(JavascriptHandler),
+        "python" => Box::new(PythonHandler::new(config)),
+        "javascript" => Box::new(JavascriptHandler::new(config)),
         _ => panic!("Unsupported language"),
     }
 }
