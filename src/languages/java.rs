@@ -46,7 +46,7 @@ impl LanguageHandler for JavaHandler {
     fn run_cmd(&self, prepared: &PreparedProgram) -> Vec<String> {
         let mut cmd = vec![self.config.runtime_path.clone()];
         cmd.extend(self.config.runtime_args.clone());
-        cmd.push(format!("{}.class", prepared.entry_name));
+        cmd.push(prepared.entry_name.clone());
         cmd
     }
 }
