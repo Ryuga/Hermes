@@ -69,7 +69,12 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig, run_cmd: String) -> Res
 
     // Added for Java exec since dynamic link to libjli.so is not resolved.
     cmd.arg("--bindmount_ro")
-        .arg("/usr/lib/jvm");
+        .arg("/usr/lib/jvm/java-21-openjdk-amd64");
+    cmd.args([
+        "--env", "JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64",
+        "--env", "PATH=/usr/lib/jvm/java-21-openjdk-amd64/bin:/usr/bin:/bin",
+        "--env", "LD_LIBRARY_PATH=/usr/lib/jvm/java-21-openjdk-amd64/lib",
+    ]);
 
     // Interface Isolation
     cmd.args([
