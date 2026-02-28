@@ -64,6 +64,7 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig, run_cmd: String) -> Res
         "--bindmount_ro", "/lib",
         "--bindmount_ro", "/lib64",
         "--bindmount_ro", "/bin",
+        "--bindmount_ro", "/etc", // needed for java
     ]);
 
     // Interface Isolation
