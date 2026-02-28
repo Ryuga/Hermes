@@ -67,6 +67,10 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig, run_cmd: String) -> Res
         "--bindmount_ro", "/etc", // needed for java
     ]);
 
+    // Added for Java exec since dynamic link to libjli.so is not resolved.
+    cmd.arg("--bindmount_ro")
+        .arg("/usr/lib/jvm");
+
     // Interface Isolation
     cmd.args([
         "--disable_proc",
