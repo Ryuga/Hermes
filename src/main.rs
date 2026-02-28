@@ -16,11 +16,23 @@ use tower_http::cors::{CorsLayer};
 use http::{Method, header::CONTENT_TYPE, HeaderValue};
 use once_cell::sync::Lazy;
 use tokio::sync::Semaphore;
+use tracing_subscriber::{fmt, EnvFilter};
 
 static EXEC_LIMIT: Lazy<Semaphore> = Lazy::new(|| Semaphore::new(4));
 
+fn init_tracing() {
+    let filter = EnvFilter::try_from_default_env()
+        .unwrap_or_else(|_| EnvFilter::new("info"));
+
+    fmt()
+        .with_env_filter(filter)
+        .with_target(false)
+        .init();
+}
+
 #[tokio::main(flavor="multi_thread", worker_threads=2)]
 async fn main() {
+    init_tracing();
     dotenv().ok();
 
 
@@ -46,7 +58,8 @@ async fn main() {
     let addr = format!("{}:{}", host, port);
     let listener = TcpListener::bind(&addr).await.unwrap();
 
-    println!("listening on {}", addr);
+    tracing::info!("listening on {}", addr);
+    tracing::info!("Sandbox engine started");
     axum::serve(listener, app).await.unwrap();
 }
 

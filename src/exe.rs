@@ -12,10 +12,6 @@ pub fn execute_code(req: Req) -> Result<Resp, String>{
 
     let program = handler.prepare(work_dir.path(), &req.code)?;
 
-    if lang_config.compile {
-        unimplemented!()
-    }
-
     let exe_cmd = if lang_config.compile {
         format!("{} && {}", handler.compile_cmd(&program).join(" "), handler.run_cmd(&program).join(" "))
     }
