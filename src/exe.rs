@@ -16,9 +16,13 @@ pub fn execute_code(req: Req) -> Result<Resp, String>{
         unimplemented!()
     }
 
-    let mut exec_config = lang_config.clone();
-    exec_config.run = program.run_cmd.clone();
+    let exe_cmd = if lang_config.compile {
+        format!("{} && {}", handler.compile_cmd(&program).join(" "), handler.run_cmd(&program).join(" "))
+    }
+    else {
+        handler.run_cmd(&program).join(" ")
+    };
 
-    let (output, std_log, code, time_ms) = safe_execute(work_dir.path(), exec_config)?;
+    let (output, std_log, code, time_ms) = safe_execute(work_dir.path(), lang_config.clone(), exe_cmd)?;
     Ok(Resp{output, std_log, code, time_ms})
 }

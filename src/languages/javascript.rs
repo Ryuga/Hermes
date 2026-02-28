@@ -20,12 +20,22 @@ impl LanguageHandler for JavascriptHandler {
         Ok(
             PreparedProgram {
                 entry_file: file,
-                run_cmd: self.config.run.clone(),
+                entry_name: self.config.source.clone(),
             }
         )
     }
-    fn compile(&self, _: &PreparedProgram) -> Result<(), String> {
+    fn compile_cmd(&self, _: &PreparedProgram) -> Vec<String> {
         println!("Ignoring compilation for javascript...");
-        Ok(())
+        unimplemented!()
+    }
+
+    fn run_cmd(&self, prepared: &PreparedProgram) -> Vec<String> {
+        let file_name = prepared.entry_file.
+            file_name().unwrap().to_string_lossy().to_string();
+
+        let mut cmd = vec![self.config.runtime_path.clone()];
+        cmd.extend(self.config.runtime_args.clone());
+        cmd.push(file_name);
+        cmd
     }
 }

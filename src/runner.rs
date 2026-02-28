@@ -5,7 +5,7 @@ use tokio::time::Instant;
 use crate::models::LangConfig;
 
 
-pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, String, i32, u128), String> {
+pub fn safe_execute(work_dir: &Path, config: LangConfig, run_cmd: String) -> Result<(String, String, i32, u128), String> {
     let start = Instant::now();
     let debug = env::var("DEBUG").unwrap_or_else(|_|"false".to_string()) == "true";
     let fsize_mb = ((config.max_output_kb + 1023) / 1024).max(1);
@@ -73,8 +73,6 @@ pub fn safe_execute(work_dir: &Path, config: LangConfig) -> Result<(String, Stri
         "--env", "PATH=/usr/bin:/bin",
     ]);
 
-    // Copy input files to tmpfs before execution
-    let run_cmd = config.run.join(" ");
     let wrapped = format!("cp -r /input/* /sandbox/ 2>/dev/null; {}", run_cmd);
 
     cmd.args([
