@@ -17,7 +17,8 @@ impl JavaHandler {
         let class_re =
             Regex::new(r"(?m)^\s*public\s+(?:\w+\s+)*class\s+([A-Za-z_][A-Za-z0-9_]*)")
                 .unwrap();
-        let res = class_re.captures(&code).ok_or("public class not found!")?;
+        let res = class_re.captures(&code)
+            .ok_or("Public class not found. Java programs must declare exactly one public class.")?;
         Ok(res[1].to_string())
     }
 }

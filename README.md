@@ -184,6 +184,7 @@ Execute user code in a sandboxed environment. Currently supports:
 
 * Python
 * JavaScript
+* Java
 
 ---
 
@@ -207,7 +208,7 @@ Content-Type: application/json
 
 ```json
 {
-  "language": "python | javascript",
+  "language": "python | javascript | java",
   "code": "your source code"
 }
 ```
@@ -248,5 +249,5 @@ curl -X POST https://your-api/execute \
 
 ### Currently used by
 * Tortoise Community Online Code Execution Tool
-* Tortoise-BOT for discord code execution utility.
+* Tortoise-BOT for discord code execution functionality.
 

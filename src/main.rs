@@ -17,6 +17,7 @@ use http::{Method, header::CONTENT_TYPE, HeaderValue};
 use once_cell::sync::Lazy;
 use tokio::sync::Semaphore;
 use tracing_subscriber::{fmt, EnvFilter};
+use tracing::info;
 
 static EXEC_LIMIT: Lazy<Semaphore> = Lazy::new(|| Semaphore::new(4));
 
@@ -58,8 +59,8 @@ async fn main() {
     let addr = format!("{}:{}", host, port);
     let listener = TcpListener::bind(&addr).await.unwrap();
 
-    tracing::info!("listening on {}", addr);
-    tracing::info!("Sandbox engine started");
+    info!("listening on {}", addr);
+    info!("Sandbox engine started");
     axum::serve(listener, app).await.unwrap();
 }
 

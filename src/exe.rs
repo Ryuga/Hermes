@@ -10,7 +10,17 @@ pub fn execute_code(req: Req) -> Result<Resp, String>{
 
     let work_dir = tempdir().map_err(|e| e.to_string())?;
 
-    let program = handler.prepare(work_dir.path(), &req.code)?;
+    let program = match handler.prepare(work_dir.path(), &req.code) {
+        Ok(p) => p,
+        Err(e) => {
+            return Ok(Resp{
+                output: String::new(),
+                std_log: e,
+                code: 1,
+                time_ms: 0
+            });
+        }
+    };
 
     let exe_cmd = if lang_config.compile {
         format!("{} && {}", handler.compile_cmd(&program).join(" "), handler.run_cmd(&program).join(" "))
