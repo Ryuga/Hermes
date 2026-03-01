@@ -37,17 +37,15 @@
     "runtime_path": "/usr/bin/java",
     "runtime_args": [
       "-Xms32m",
-      "-Xmx192m",
-      "-XX:MaxMetaspaceSize=128m",
-      "-XX:ReservedCodeCacheSize=64m",
-      "-XX:ActiveProcessorCount=1"
+      "-Xmx256m",
+      "-XX:MaxMetaspaceSize=128m"
     ],
     "max_time_limit": 8,
     "max_cpu_time_sec": 8,
-    "max_memory_mb": 512,
-    "max_stack_mb": 16,
-    "max_processes": 4,
-    "max_open_files": 64,
+    "max_memory_mb": 2048,
+    "max_stack_mb": 32,
+    "max_processes": 16,
+    "max_open_files": 128,
     "max_output_kb": 1024
   }
 }
