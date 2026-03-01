@@ -13,18 +13,42 @@ impl JavaHandler {
         Self { config }
     }
 
+    fn check_for_external_imports_and_packages(code: &str) -> Result<(), String> {
+        if code.contains("package ") {
+            return Err("Compilation Error: 'package' declarations are not allowed.".to_string());
+        }
+
+        let import_re = Regex::new(r"(?m)^\s*import\s+([a-zA-Z0-9_.]+);").unwrap();
+
+        for matches in import_re.captures_iter(code) {
+            let import = &matches[1];
+            if !(import.starts_with("java.")
+                || import.starts_with("javax.")
+                || import.starts_with("jdk."))
+            {
+                return Err(
+                    format!("Compilation Error: external import '{}' is not allowed.", import)
+                );
+            }
+        }
+        Ok(())
+    }
+
     fn extract_main_class_name(code: &str) -> Result<String, String> {
         let class_re =
             Regex::new(r"(?m)^\s*public\s+(?:\w+\s+)*class\s+([A-Za-z_][A-Za-z0-9_]*)")
                 .unwrap();
         let res = class_re.captures(&code)
-            .ok_or("Public class not found. Java programs must declare exactly one public class.")?;
+            .ok_or("Compilation Error: Java programs must declare a public class.")?;
         Ok(res[1].to_string())
     }
 }
 
 impl LanguageHandler for JavaHandler {
     fn prepare(&self, work_dir: &Path, code: &str) -> Result<PreparedProgram, String> {
+
+        Self::check_for_external_imports_and_packages(code)?;
+
         let class_name = Self::extract_main_class_name(&code)?;
 
         let file_path = work_dir.join(format!("{}.java", class_name));
