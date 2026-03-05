@@ -247,7 +247,8 @@ curl -X POST https://your-api/execute \
 * Default Nginx rate limiting
 ---
 
-### Currently used by
+### Used by
+* Runtime - Discord bot for code execution.
 * Tortoise Community Online Code Execution Tool
 * Tortoise-BOT for discord code execution functionality.
 
