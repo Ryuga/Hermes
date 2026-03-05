@@ -248,7 +248,7 @@ curl -X POST https://your-api/execute \
 ---
 
 ### Used by
-* Runtime - Discord bot for code execution.
-* Tortoise Community Online Code Execution Tool
-* Tortoise-BOT for discord code execution functionality.
+* [Runtime](https://runtime-bot.tortoisecommunity.org) - Discord bot for code execution.
+* [Tortoise Community](https://execute.tortoisecommunity.org) Online Code Execution Tool
+* [Tortoise-BOT](https://tortoise-bot.tortoisecommunity.org) for discord code execution functionality.
 
