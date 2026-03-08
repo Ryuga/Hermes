@@ -9,6 +9,8 @@ It runs untrusted and potentially hostile code inside isolated environments with
 
 ### Requirements
 * Rust toolchain installed
+* Nsjail installed
+* Runtime required (Follow their official installation)
 
 ### Build application
 ```bash
