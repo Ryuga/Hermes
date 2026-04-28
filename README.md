@@ -1,8 +1,16 @@
 # Hermes Code Execution Engine
 
-Hermes is a high-performance code execution engine written in Rust. It provides sandboxed, on-demand execution of arbitrary code through a simple REST API.
+Hermes is a high-performance code execution engine written in Rust. 
 
-The system is designed for judge platforms, coding sandboxes and auto-eval services. 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Ryuga/Hermes)
+[![Status](https://img.shields.io/website?url=https%3A%2F%2Fapi.tortoisecommunity.org&up_message=UP&down_message=DOWN&label=API)](https://execute.tortoisecommunity.org)
+[![Status](https://img.shields.io/website?url=https%3A%2F%2Fexecute.tortoisecommunity.org&up_message=UP&down_message=DOWN&label=WEBSITE)](https://execute.tortoisecommunity.org)
+
+---
+
+
+## About 
+The system provides sandboxed, on-demand execution of arbitrary code through a simple REST API, designed for judge platforms, coding sandboxes and auto-eval services. 
 It runs untrusted and potentially hostile code inside isolated environments with strict resource limits to ensure safety, predictability, and throughput.
 
 ## Setup Instruction (Local)
