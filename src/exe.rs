@@ -4,8 +4,27 @@ use crate::loader::get_lang_config;
 use crate::models::{Req, Resp};
 use crate::runner::safe_execute;
 
-pub fn execute_code(req: Req) -> Result<Resp, String>{
+pub fn execute_code(req: Req, passed_token: Option<String>) -> Result<Resp, String>{
     let lang_config = get_lang_config(req.language.as_str());
+
+    if lang_config.authenticate {
+        let secret = std::env::var("API_TOKEN")
+            .map_err(|_| "Server configuration error".to_string())?;
+
+        let is_authorized = passed_token
+            .map(|t| t == format!("Bearer {}", secret))
+            .unwrap_or(false);
+
+        if !is_authorized {
+            return Ok(Resp {
+                output: String::new(),
+                std_log: "Auth Error: This language requires a valid API key.".to_string(),
+                code: 401,
+                time_ms: 0,
+            });
+        }
+    }
+
     let handler = get_handler(req.language.as_str(), lang_config.clone());
 
     let work_dir = tempdir().map_err(|e| e.to_string())?;

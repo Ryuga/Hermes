@@ -1,8 +1,10 @@
 pub mod python;
 mod javascript;
 mod java;
+mod cpp;
 
 use std::path::{Path, PathBuf};
+use crate::languages::cpp::CppHandler;
 use crate::languages::java::JavaHandler;
 use crate::languages::javascript::JavascriptHandler;
 use crate::languages::python::PythonHandler;
@@ -24,6 +26,7 @@ pub fn get_handler(lang: &str, config: LangConfig) -> Box<dyn LanguageHandler> {
         "python" => Box::new(PythonHandler::new(config)),
         "javascript" => Box::new(JavascriptHandler::new(config)),
         "java" => Box::new(JavaHandler::new(config)),
+        "cpp" => Box::new(CppHandler::new(config)),
         _ => panic!("Unsupported language"),
     }
 }

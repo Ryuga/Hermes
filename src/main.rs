@@ -68,12 +68,20 @@ async fn handler() -> &'static str {
     "UP!"
 }
 
-async fn execution_handler(Json(req): Json<Req>) -> Result<Json<Resp>, StatusCode> {
+async fn execution_handler(
+    headers: axum::http::HeaderMap,
+    Json(req): Json<Req>
+) -> Result<Json<Resp>, StatusCode> {
     let permit = EXEC_LIMIT.acquire().await.unwrap();
+
+    let auth_token = headers
+        .get(axum::http::header::AUTHORIZATION)
+        .and_then(|h| h.to_str().ok())
+        .map(|s| s.to_string());
 
     let result = tokio::task::spawn_blocking(move || {
         let _permit = permit;
-        execute_code(req)
+        execute_code(req, auth_token)
     }).await
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?
     .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;

@@ -3,6 +3,7 @@ use serde::de::Error;
 
 fn default_vector() -> Vec<String> { vec![] }
 fn default_compile() -> bool { false }
+fn default_authenticate() -> bool { false }
 fn default_time_limit() -> u64 { 2 }
 fn default_cpu_time_sec() -> u64 { 2 }
 fn default_memory_mb() -> u64 { 256 }
@@ -17,6 +18,9 @@ pub struct LangConfig {
     pub source: String,
 
     pub compile: bool,
+
+    pub authenticate: bool,
+
     pub compiler_path: String,
     pub compiler_args: Vec<String>,
 
@@ -38,6 +42,9 @@ pub struct RawLangConfig {
 
     #[serde(default = "default_compile")]
     pub compile: bool,
+
+    #[serde(default = "default_authenticate")]
+    pub authenticate: bool,
 
     #[serde(default)]
     pub compiler_path: Option<String>,
@@ -82,10 +89,6 @@ impl<'de> Deserialize<'de> for LangConfig {
                 return Err(D::Error::custom("source can't be empty"));
             }
 
-            if raw.runtime_path.trim().is_empty(){
-                return Err(D::Error::custom("runtime_path can't be empty"));
-            }
-
             if raw.compile && raw.compiler_path.is_none() {
                 return Err(D::Error::custom(
                     "compiler_path is required when compile is set true",
@@ -95,6 +98,7 @@ impl<'de> Deserialize<'de> for LangConfig {
             Ok(LangConfig {
                 source: raw.source,
                 compile: raw.compile,
+                authenticate: raw.authenticate,
                 runtime_path: raw.runtime_path,
                 compiler_path: raw.compiler_path.unwrap_or_default(),
                 compiler_args: raw.compiler_args,

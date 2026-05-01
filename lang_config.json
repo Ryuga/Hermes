@@ -47,5 +47,27 @@
     "max_processes": 16,
     "max_open_files": 128,
     "max_output_kb": 1024
+  },
+  "cpp": {
+    "source": "solution.cpp",
+    "compile": true,
+    "authenticate": true,
+    "compiler_path": "/usr/bin/g++",
+    "compiler_args": [
+      "-O3",
+      "-std=c++17",
+      "-Wall",
+      "-Wextra",
+      "-static"
+    ],
+    "runtime_path": "",
+    "runtime_args": [],
+    "max_time_limit": 1,
+    "max_cpu_time_sec": 1,
+    "max_memory_mb": 512,
+    "max_stack_mb": 64,
+    "max_processes": 1,
+    "max_open_files": 32,
+    "max_output_kb": 1024
   }
 }
