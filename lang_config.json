@@ -36,9 +36,8 @@
     "compiler_args": [],
     "runtime_path": "/usr/bin/java",
     "runtime_args": [
-      "-Xms32m",
-      "-Xmx256m",
-      "-XX:MaxMetaspaceSize=128m"
+      "-XX:-UseCompressedOops",
+      "-XX:-UseCompressedClassPointers"
     ],
     "max_time_limit": 8,
     "max_cpu_time_sec": 8,
