@@ -2,6 +2,7 @@
   "python": {
     "source": "main.py",
     "compile": false,
+    "authenticate": false,
     "compiler_path": "",
     "compiler_args": [],
     "runtime_path": "/usr/bin/python3",
@@ -17,6 +18,7 @@
   "javascript": {
     "source": "main.js",
     "compile": false,
+    "authenticate": false,
     "compiler_path": "",
     "compiler_args": [],
     "runtime_path": "/usr/bin/node",
@@ -32,6 +34,7 @@
   "java": {
     "source": "Main.java",
     "compile": true,
+    "authenticate": false,
     "compiler_path": "/usr/bin/javac",
     "compiler_args": [],
     "runtime_path": "/usr/bin/java",
@@ -53,20 +56,18 @@
     "authenticate": true,
     "compiler_path": "/usr/bin/g++",
     "compiler_args": [
-      "-O3",
+      "-O2",
       "-std=c++17",
-      "-Wall",
-      "-Wextra",
-      "-static"
+      "-s"
     ],
     "runtime_path": "",
     "runtime_args": [],
-    "max_time_limit": 1,
-    "max_cpu_time_sec": 1,
+    "max_time_limit": 5,
+    "max_cpu_time_sec": 3,
     "max_memory_mb": 512,
     "max_stack_mb": 64,
     "max_processes": 1,
     "max_open_files": 32,
-    "max_output_kb": 1024
+    "max_output_kb": 2048
   }
 }
