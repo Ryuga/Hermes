@@ -193,6 +193,7 @@ journalctl -u hermes -f
 Execute user code in a sandboxed environment. Currently supports:
 
 * Python
+* C++
 * JavaScript
 * Java
 
