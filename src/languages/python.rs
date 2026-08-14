@@ -5,11 +5,11 @@ use crate::languages::{LanguageHandler, PreparedProgram};
 use crate::config::models::{LangConfig, ReqMulti};
 
 pub struct PythonHandler {
-    config: &'static LangConfig,
+    config: LangConfig,
 }
 
 impl PythonHandler {
-    pub fn new(config: &'static LangConfig) -> Self {
+    pub fn new(config: LangConfig) -> Self {
         Self { config }
     }
 }

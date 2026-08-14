@@ -11,7 +11,7 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
                     req: ReqMulti,
                     passed_token: Option<String>) -> Result<Resp, String>{
 
-    let lang_config = match get_lang_config(&req.language) {
+    let lang_config = match get_lang_config(&req.language, &req.limits) {
         Ok(config) => config,
         Err(e) => return Ok(
             Resp {
@@ -43,7 +43,7 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
 
     let executor_box = executor_pool.acquire();
 
-    let handler = get_handler(&req.language).map_err(|e| e)?;
+    let handler = get_handler(&req).map_err(|e| e)?;
 
     let work_dir = &executor_box.path;
 
@@ -61,7 +61,7 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
 
     if lang_config.compile {
         let compile_args = handler.compile_cmd(&program);
-        let (out, log, code, _) = safe_execute(&executor_box, lang_config, &compile_args)?;
+        let (out, log, code, _) = safe_execute(&executor_box, &lang_config, &compile_args)?;
         if code != 0 {
             return Ok(Resp {
                 output: out,

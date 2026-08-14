@@ -5,11 +5,11 @@ use crate::languages::{LanguageHandler, PreparedProgram};
 use crate::config::models::{LangConfig, ReqMulti};
 
 pub struct JavascriptHandler {
-    config: &'static LangConfig,
+    config: LangConfig,
 }
 
 impl JavascriptHandler {
-    pub fn new(config: &'static LangConfig) -> Self {
+    pub fn new(config: LangConfig) -> Self {
         Self { config }
     }
 }

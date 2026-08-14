@@ -16,11 +16,11 @@ static MAIN_METHOD_RE: Lazy<Regex> = Lazy::new(|| {
 });
 
 pub struct CppHandler {
-    config: &'static LangConfig,
+    config: LangConfig,
 }
 
 impl CppHandler {
-    pub fn new(config: &'static LangConfig) -> Self {
+    pub fn new(config: LangConfig) -> Self {
         Self { config }
     }
 
