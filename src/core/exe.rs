@@ -41,7 +41,7 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
         }
     }
 
-    if lang_config.authenticate {
+    else if lang_config.authenticate {
 
         if !is_authorized {
             return Ok(Resp {

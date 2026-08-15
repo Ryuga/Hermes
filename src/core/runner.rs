@@ -23,16 +23,16 @@ pub fn safe_execute(sand_box: &impl Sandbox,
     cmd.args(&config.isolate_args);
 
     // Resource limit enforcement
-    cmd.arg(format!("--mem={}", config.memory_kb));
-    cmd.arg(format!("--time={}", config.cpu_time_sec));
+    cmd.arg(format!("--mem={}", config.memory_limit * 1000));
+    cmd.arg(format!("--time={}", config.cpu_time_limit));
     cmd.arg(format!("--wall-time={}", config.time_limit));
     cmd.arg(format!("--extra-time={}", "2")); // To be adjusted per lang
-    cmd.arg(format!("--stack={}", config.stack_kb));
-    cmd.arg(format!("--open-files={}", config.open_files));
-    cmd.arg(format!("--fsize={}", config.file_size_kb));
+    cmd.arg(format!("--stack={}", config.stack_limit * 1000));
+    cmd.arg(format!("--open-files={}", config.open_files_limit));
+    cmd.arg(format!("--fsize={}", config.file_size_limit * 1000));
     cmd.arg(format!("--quota={}", "20000,2000")); // To be reviewed and adjusted
     cmd.arg(format!("--core={}", "1024")); // 1MB for core dump to be reviewed and adjusted
-    cmd.arg(format!("--processes={}", config.processes));
+    cmd.arg(format!("--processes={}", config.processes_limit));
 
     // Environment
     if !*IS_DEBUG {

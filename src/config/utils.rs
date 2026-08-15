@@ -20,12 +20,12 @@ pub fn get_lang_config(language: &String, limits: Option<&ExecutionLimits>) -> R
     };
     if let Some(limits) = limits {
         apply_limit(&mut config.time_limit, limits.time_limit, config.max_time_limit, "Time limit invalid or exceeds max")?;
-        apply_limit(&mut config.cpu_time_sec, limits.cpu_time_sec, config.max_cpu_time_sec, "CPU Time limit invalid or exceeds max")?;
-        apply_limit(&mut config.memory_kb, limits.memory_kb, config.max_memory_kb, "Memory limit invalid or exceeds max")?;
-        apply_limit(&mut config.stack_kb, limits.stack_kb, config.max_stack_kb, "Stack limit invalid or exceeds max")?;
-        apply_limit(&mut config.open_files, limits.open_files, config.max_open_files, "Open files limit invalid or exceeds max")?;
-        apply_limit(&mut config.file_size_kb, limits.file_size_kb, config.max_file_size_kb, "File size limit invalid or exceeds max")?;
-        apply_limit(&mut config.processes, limits.processes, config.max_processes, "Processes limit invalid or exceeds max")?;
+        apply_limit(&mut config.cpu_time_limit, limits.cpu_time_limit, config.max_cpu_time_limit, "CPU Time limit invalid or exceeds max")?;
+        apply_limit(&mut config.memory_limit, limits.memory_limit, config.max_memory_limit, "Memory limit invalid or exceeds max")?;
+        apply_limit(&mut config.stack_limit, limits.stack_limit, config.max_stack_limit, "Stack limit invalid or exceeds max")?;
+        apply_limit(&mut config.open_files_limit, limits.open_files_limit, config.max_open_files_limit, "Open files limit invalid or exceeds max")?;
+        apply_limit(&mut config.file_size_limit, limits.file_size_limit, config.max_file_size_limit, "File size limit invalid or exceeds max")?;
+        apply_limit(&mut config.processes_limit, limits.processes_limit, config.max_processes_limit, "Processes limit invalid or exceeds max")?;
     }
 
     Ok(config)
