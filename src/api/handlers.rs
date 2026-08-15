@@ -23,7 +23,7 @@ pub async fn single_execution(
 ) -> Result<Json<Resp>, StatusCode> {
 
     let state_ref = Arc::clone(&state);
-    let lang_config = match get_lang_config(&req.language, &req.limits) {
+    let lang_config = match get_lang_config(&req.language, req.limits.as_ref()) {
         Ok(cfg) => cfg,
         Err(e) => {
             return Ok(Json(Resp {

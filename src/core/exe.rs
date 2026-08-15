@@ -11,7 +11,7 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
                     req: ReqMulti,
                     passed_token: Option<String>) -> Result<Resp, String>{
 
-    let lang_config = match get_lang_config(&req.language, &req.limits) {
+    let lang_config = match get_lang_config(&req.language, req.limits.as_ref()) {
         Ok(config) => config,
         Err(e) => return Ok(
             Resp {
@@ -23,13 +23,25 @@ pub fn execute_code(compiler_pool: &BoxManager<PersistentBox>,
         )
     };
 
-    if lang_config.authenticate {
-        let secret = std::env::var("API_TOKEN")
-            .map_err(|_| "Server configuration error".to_string())?;
+    let secret = std::env::var("API_TOKEN")
+        .map_err(|_| "Server configuration error".to_string())?;
 
-        let is_authorized = passed_token
-            .map(|t| t == format!("Bearer {}", secret))
-            .unwrap_or(false);
+    let is_authorized = passed_token
+        .map(|t| t == format!("Bearer {}", secret))
+        .unwrap_or(false);
+
+    if let Some(_) = req.limits{
+        if !is_authorized {
+            return Ok(Resp {
+                output: String::new(),
+                std_log: "Auth Error: Limit adjustment requires a valid API key.".to_string(),
+                code: 401,
+                time_ms: 0,
+            });
+        }
+    }
+
+    if lang_config.authenticate {
 
         if !is_authorized {
             return Ok(Resp {

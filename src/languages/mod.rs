@@ -24,7 +24,7 @@ pub trait LanguageHandler {
 }
 
 pub fn get_handler(req: &ReqMulti) -> Result<Box<dyn LanguageHandler>, String> {
-    let config = get_lang_config(&req.language, &req.limits)?;
+    let config = get_lang_config(&req.language, req.limits.as_ref())?;
 
     let handler: Box<dyn LanguageHandler> = match req.language.as_str() {
         "python" => Box::new(PythonHandler::new(config)),

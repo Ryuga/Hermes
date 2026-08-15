@@ -175,7 +175,7 @@ pub struct ExecutionLimits {
 pub struct Req {
     pub language: String,
     pub code: String,
-    pub limits: ExecutionLimits,
+    pub limits: Option<ExecutionLimits>,
 }
 
 #[derive(Serialize, Debug)]
@@ -197,7 +197,7 @@ pub struct ReqMulti {
     pub language: String,
     pub files: Vec<File>,
     pub entry_file: String,
-    pub limits: ExecutionLimits,
+    pub limits: Option<ExecutionLimits>,
 }
 
 impl Validate for ReqMulti {
