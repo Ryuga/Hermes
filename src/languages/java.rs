@@ -7,7 +7,7 @@ use crate::languages::{LanguageHandler, PreparedProgram};
 use crate::config::models::{LangConfig, ReqMulti};
 
 pub struct JavaHandler {
-    config: &'static LangConfig,
+    config: LangConfig,
 }
 
 static IMPORT_RE: Lazy<Regex> = Lazy::new(|| {
@@ -20,7 +20,7 @@ static CLASS_RE: Lazy<Regex> = Lazy::new(|| {
 
 
 impl JavaHandler {
-    pub fn new(config: &'static LangConfig) -> Self {
+    pub fn new(config: LangConfig) -> Self {
         Self { config }
     }
 

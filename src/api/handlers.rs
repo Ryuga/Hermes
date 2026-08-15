@@ -23,7 +23,17 @@ pub async fn single_execution(
 ) -> Result<Json<Resp>, StatusCode> {
 
     let state_ref = Arc::clone(&state);
-    let lang_config = get_lang_config(&req.language).map_err(|_| StatusCode::BAD_REQUEST)?;
+    let lang_config = match get_lang_config(&req.language, req.limits.as_ref()) {
+        Ok(cfg) => cfg,
+        Err(e) => {
+            return Ok(Json(Resp {
+                code: 1,
+                output: String::new(),
+                std_log: format!("Error: {e}"),
+                time_ms: 0,
+            }));
+        }
+    };
 
     let auth_token = headers
         .get(http::header::AUTHORIZATION)
@@ -39,6 +49,7 @@ pub async fn single_execution(
         entry_file:lang_config.source.clone(),
         files: [file].to_vec(),
         language: req.language,
+        limits:  req.limits
     };
 
     let result = run_execution(state_ref, multi_req, auth_token).await?;
@@ -70,11 +81,12 @@ async fn run_execution(state: Arc<AppState>,
 ) -> Result<Resp, StatusCode> {
 
     tokio::task::spawn_blocking(move || {
-        let manager = &state.box_manager;
 
-        let isolate_box = manager.acquire();
-        let run_result = execute_code(&isolate_box, req, auth_token);
-        manager.release(isolate_box);
+        let compiler_pool = Arc::clone(&state.compiler_pool);
+        let executor_pool = Arc::clone(&state.executor_pool);
+
+        let run_result = execute_code(&compiler_pool, &executor_pool, req, auth_token);
+
         run_result
     }).await
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?

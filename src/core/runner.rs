@@ -3,12 +3,12 @@ use std::process::Command;
 use tracing::instrument;
 use tokio::time::Instant;
 
-use crate::core::workers::IsolateBox;
+use crate::core::workers::{Sandbox};
 use crate::config::models::LangConfig;
 use crate::config::constants::IS_DEBUG;
 
-#[instrument(level = "debug")]
-pub fn safe_execute(isolate_box: &IsolateBox,
+#[instrument(level = "debug", skip(config))]
+pub fn safe_execute(sand_box: &impl Sandbox,
                     config: &LangConfig,
                     run_args: &[String]
 ) -> Result<(String, String, i32, u128), String> {
@@ -17,22 +17,22 @@ pub fn safe_execute(isolate_box: &IsolateBox,
     let mut cmd = Command::new("isolate");
 
     // Box config
-    cmd.arg("--box-id").arg(&isolate_box.id.to_string());
+    cmd.arg("--box-id").arg(&sand_box.id().to_string());
     cmd.arg("--cg");
 
     cmd.args(&config.isolate_args);
 
     // Resource limit enforcement
-    cmd.arg(format!("--mem={}", config.max_memory_kb));
-    cmd.arg(format!("--time={}", config.max_cpu_time_sec));
-    cmd.arg(format!("--wall-time={}", config.max_time_limit));
+    cmd.arg(format!("--mem={}", config.memory_limit * 1000));
+    cmd.arg(format!("--time={}", config.cpu_time_limit));
+    cmd.arg(format!("--wall-time={}", config.time_limit));
     cmd.arg(format!("--extra-time={}", "2")); // To be adjusted per lang
-    cmd.arg(format!("--stack={}", config.max_stack_kb));
-    cmd.arg(format!("--open-files={}", config.max_open_files));
-    cmd.arg(format!("--fsize={}", config.max_file_size_kb));
+    cmd.arg(format!("--stack={}", config.stack_limit * 1000));
+    cmd.arg(format!("--open-files={}", config.open_files_limit));
+    cmd.arg(format!("--fsize={}", config.file_size_limit * 1000));
     cmd.arg(format!("--quota={}", "20000,2000")); // To be reviewed and adjusted
     cmd.arg(format!("--core={}", "1024")); // 1MB for core dump to be reviewed and adjusted
-    cmd.arg(format!("--processes={}", config.max_processes));
+    cmd.arg(format!("--processes={}", config.processes_limit));
 
     // Environment
     if !*IS_DEBUG {
@@ -43,7 +43,7 @@ pub fn safe_execute(isolate_box: &IsolateBox,
 
     // Metafile for job
     // TODO: read exit code
-    let meta_path = format!("/tmp/isolate_{}.meta", isolate_box.id);
+    let meta_path = format!("/tmp/isolate_{}.meta", sand_box.id());
     cmd.arg(format!("--meta={}", &meta_path));
 
     cmd.arg("--run");

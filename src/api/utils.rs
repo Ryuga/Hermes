@@ -18,7 +18,7 @@ where
 {
     type Rejection = (StatusCode, String);
 
-    fn from_request(req: Request, state: &S) -> impl std::future::Future<Output = Result<Self, Self::Rejection>> + Send {
+    fn from_request(req: Request, state: &S) -> impl Future<Output = Result<Self, Self::Rejection>> + Send {
         async move {
             let Json(value) = Json::<T>::from_request(req, state)
                 .await

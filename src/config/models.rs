@@ -1,19 +1,18 @@
 use serde::de::Error;
 use serde::{Deserialize, Deserializer, Serialize};
 
-use super::utils::string_or_int;
 use crate::api::utils::Validate;
 
 fn default_vector() -> Vec<String> { vec![] }
 fn default_compile() -> bool { false }
 fn default_authenticate() -> bool { false }
-fn default_time_limit() -> String { 2.to_string() }
-fn default_cpu_time_sec() -> String { 2.to_string() }
-fn default_memory_kb() -> String { (256 * 1024).to_string() }
-fn default_stack_kb() -> String { (64 * 1024).to_string() }
-fn default_processes() -> String { 16.to_string() }
-fn default_open_files() -> String { 64.to_string() }
-fn default_file_size_kb() -> String { 1024.to_string() }
+fn default_time_limit() ->  i32 {2}
+fn default_cpu_time_limit() -> i32 {2}
+fn default_memory_limit() -> i32 {256 * 1024}
+fn default_stack_limit() -> i32 {64 * 1024}
+fn default_processes_limit() -> i32 {16}
+fn default_open_files_limit() -> i32 {64}
+fn default_file_size_limit() -> i32 {1024}
 
 
 #[derive(Clone, Debug)]
@@ -31,13 +30,21 @@ pub struct LangConfig {
     pub runtime_args: Vec<String>,
     pub isolate_args: Vec<String>,
 
-    pub max_time_limit: String,
-    pub max_cpu_time_sec: String,
-    pub max_memory_kb: String,
-    pub max_stack_kb: String,
-    pub max_processes: String,
-    pub max_open_files: String,
-    pub max_file_size_kb: String,
+    pub time_limit: i32,
+    pub cpu_time_limit: i32,
+    pub memory_limit: i32,
+    pub stack_limit: i32,
+    pub processes_limit: i32,
+    pub open_files_limit: i32,
+    pub file_size_limit: i32,
+
+    pub max_time_limit: i32,
+    pub max_cpu_time_limit: i32,
+    pub max_memory_limit: i32,
+    pub max_stack_limit: i32,
+    pub max_processes_limit: i32,
+    pub max_open_files_limit: i32,
+    pub max_file_size_limit: i32,
 }
 
 #[derive(Deserialize)]
@@ -64,26 +71,47 @@ pub struct RawLangConfig {
     #[serde(default = "default_vector")]
     pub isolate_args: Vec<String>,
 
-    #[serde(default = "default_time_limit",deserialize_with = "string_or_int")]
-    pub max_time_limit: String,
+    #[serde(default = "default_time_limit")]
+    pub default_time_limit: i32,
 
-    #[serde(default = "default_cpu_time_sec",deserialize_with = "string_or_int")]
-    pub max_cpu_time_sec: String,
+    #[serde(default = "default_cpu_time_limit")]
+    pub default_cpu_time_limit: i32,
 
-    #[serde(default = "default_memory_kb",deserialize_with = "string_or_int")]
-    pub max_memory_kb: String,
+    #[serde(default = "default_memory_limit")]
+    pub default_memory_limit: i32,
 
-    #[serde(default = "default_stack_kb",deserialize_with = "string_or_int")]
-    pub max_stack_kb: String,
+    #[serde(default = "default_stack_limit")]
+    pub default_stack_limit: i32,
 
-    #[serde(default = "default_processes",deserialize_with = "string_or_int")]
-    pub max_processes: String,
+    #[serde(default = "default_processes_limit")]
+    pub default_processes_limit: i32,
 
-    #[serde(default = "default_open_files",deserialize_with = "string_or_int")]
-    pub max_open_files: String,
+    #[serde(default = "default_open_files_limit")]
+    pub default_open_files_limit: i32,
 
-    #[serde(default = "default_file_size_kb",deserialize_with = "string_or_int")]
-    pub max_file_size_kb: String,
+    #[serde(default = "default_file_size_limit")]
+    pub default_file_size_limit: i32,
+
+    #[serde(default = "default_time_limit")]
+    pub max_time_limit: i32,
+
+    #[serde(default = "default_cpu_time_limit")]
+    pub max_cpu_time_limit: i32,
+
+    #[serde(default = "default_memory_limit")]
+    pub max_memory_limit: i32,
+
+    #[serde(default = "default_stack_limit")]
+    pub max_stack_limit: i32,
+
+    #[serde(default = "default_processes_limit")]
+    pub max_processes_limit: i32,
+
+    #[serde(default = "default_open_files_limit")]
+    pub max_open_files_limit: i32,
+
+    #[serde(default = "default_file_size_limit")]
+    pub max_file_size_limit: i32,
 
 }
 
@@ -112,22 +140,42 @@ impl<'de> Deserialize<'de> for LangConfig {
                 compiler_args: raw.compiler_args,
                 runtime_args: raw.runtime_args,
                 isolate_args: raw.isolate_args,
+
+                time_limit: raw.default_time_limit,
+                cpu_time_limit: raw.default_cpu_time_limit,
+                memory_limit: raw.default_memory_limit,
+                stack_limit: raw.default_stack_limit,
+                processes_limit: raw.default_processes_limit,
+                open_files_limit: raw.default_open_files_limit,
+                file_size_limit: raw.default_file_size_limit,
+
                 max_time_limit: raw.max_time_limit,
-                max_cpu_time_sec: raw.max_cpu_time_sec,
-                max_memory_kb: raw.max_memory_kb,
-                max_stack_kb: raw.max_stack_kb,
-                max_processes: raw.max_processes,
-                max_open_files: raw.max_open_files,
-                max_file_size_kb: raw.max_file_size_kb,
+                max_cpu_time_limit: raw.max_cpu_time_limit,
+                max_memory_limit: raw.max_memory_limit,
+                max_stack_limit: raw.max_stack_limit,
+                max_processes_limit: raw.max_processes_limit,
+                max_open_files_limit: raw.max_open_files_limit,
+                max_file_size_limit: raw.max_file_size_limit,
             })
     }
 }
 
+#[derive(Deserialize, Debug, Clone)]
+pub struct ExecutionLimits {
+    pub time_limit: Option<i32>,
+    pub cpu_time_limit: Option<i32>,
+    pub memory_limit: Option<i32>,
+    pub stack_limit: Option<i32>,
+    pub processes_limit: Option<i32>,
+    pub open_files_limit: Option<i32>,
+    pub file_size_limit: Option<i32>,
+}
 
 #[derive(Deserialize, Debug)]
 pub struct Req {
     pub language: String,
-    pub code: String
+    pub code: String,
+    pub limits: Option<ExecutionLimits>,
 }
 
 #[derive(Serialize, Debug)]
@@ -149,6 +197,7 @@ pub struct ReqMulti {
     pub language: String,
     pub files: Vec<File>,
     pub entry_file: String,
+    pub limits: Option<ExecutionLimits>,
 }
 
 impl Validate for ReqMulti {

@@ -217,6 +217,20 @@ curl -X POST http://127.0.0.1:8000/execute/ \
   -d '{"language":"python","code":"print(1+1)"}'
 ```
 
+### Limits
+These are optional parameters which you can pass along with each request to enforce stricter/lenient resource limits per execution.
+
+| Parameter          | Required | Minimum | Maximum | Unit      |
+| ------------------ | :------: | ------: | ------: | --------- |
+| `time_limit`       |    No    |       1 |      20 | seconds   |
+| `cpu_time_limit`   |    No    |       1 |      20 | seconds   |
+| `memory_limit`     |    No    |       1 |    1000 | MB        |
+| `stack_limit`      |    No    |       1 |     250 | MB        |
+| `process_limit`    |    No    |       1 |     128 | processes |
+| `open_files_limit` |    No    |       1 |     128 | files     |
+| `file_size_limit`  |    No    |       1 |      10 | MB        |
+
+
 ## Example
 
 ### Single-File Execution
@@ -228,7 +242,16 @@ To execute single file, send a `POST` request to the `/execute/` endpoint.
 ```json
 {
   "language": "python",
-  "code":"print(1+1)"
+  "code":"print(1+1)",
+  "limits": {
+    "time_limit": 2,
+    "cpu_time_limit": 2,
+    "memory_limit": 64,
+    "stack_limit": 5,
+    "process_limit": 8,
+    "open_files_limit": 64,
+    "file_size_limit": 1
+  }
 }
 ```
 
@@ -253,7 +276,16 @@ To execute multiple files, send a `POST` request to the `/v2/execute/` endpoint.
       "content": "print('Imported test.py')"
     }
   ],
-  "entry_file": "main.py"
+  "entry_file": "main.py",
+  "limits": {
+    "time_limit": 2,
+    "cpu_time_limit": 2,
+    "memory_limit": 64,
+    "stack_limit": 5,
+    "process_limit": 8,
+    "open_files_limit": 64,
+    "file_size_limit": 1
+  }
 }
 ```
 
