@@ -11,13 +11,15 @@ use tracing::info;
 use tokio::net::TcpListener;
 
 use state::AppState;
-use config::constants::{WORKER_COUNT, HOST, PORT};
+use config::constants::{EPHEMERAL_WORKER_COUNT, PERSISTENT_WORKER_COUNT, HOST, PORT};
 
 #[tokio::main(flavor="multi_thread")]
 async fn main() {
     config::bootstrap();
 
-    let state = Arc::new(AppState::new(*WORKER_COUNT));
+    let state = Arc::new(
+        AppState::new(*EPHEMERAL_WORKER_COUNT, *PERSISTENT_WORKER_COUNT)
+    );
     let app = api::create_router(state);
 
     let addr = format!("{}:{}", *HOST, *PORT);

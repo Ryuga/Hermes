@@ -14,12 +14,20 @@ pub static PORT: Lazy<String> = Lazy::new(||
     env::var("PORT").unwrap_or_else(|_| "8000".to_string())
 );
 
-pub static WORKER_COUNT: Lazy<usize> = Lazy::new(||
-    env::var("WORKER_COUNT")
+pub static EPHEMERAL_WORKER_COUNT: Lazy<usize> = Lazy::new(||
+    env::var("EPHEMERAL_WORKER_COUNT")
         .ok()
         .and_then(|v| v.parse().ok())
         .unwrap_or_else(get_calculated_worker_count)
 );
+
+pub static PERSISTENT_WORKER_COUNT: Lazy<usize> = Lazy::new(||
+    env::var("PERSISTENT_WORKER_COUNT")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .unwrap_or_else(||(*EPHEMERAL_WORKER_COUNT as f64 * 0.1).ceil() as usize)
+);
+
 
 pub static ALLOWED_ORIGINS: Lazy<Vec<HeaderValue>> = Lazy::new(|| {
     env::var("ALLOWED_ORIGIN")
